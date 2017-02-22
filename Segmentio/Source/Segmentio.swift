@@ -438,6 +438,7 @@ public class Segmentio: UIView {
             let animation = CABasicAnimation(keyPath: "path")
             animation.fromValue = shapeLayer.path
             animation.toValue = shapeLayerPath.CGPath
+            animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
             animation.duration = animationDuration
             CATransaction.setCompletionBlock() {
                 self.isPerformingScrollAnimation = false
