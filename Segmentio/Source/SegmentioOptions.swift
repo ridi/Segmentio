@@ -11,17 +11,18 @@ import UIKit
 // MARK: - Item
 
 public struct SegmentioItem {
-    var title: String?
-    var image: UIImage?
-    var badgeCount: Int?
-    var badgeColor: UIColor?
     
+    public var title: String?
+    public var image: UIImage?
+    public var badgeCount: Int?
+    public var badgeColor: UIColor?
+
     public init(title: String?, image: UIImage?) {
         self.title = title
         self.image = image
     }
     
-    public mutating func setupBadgeWithCount(count: Int, color: UIColor = .redColor()) {
+    public mutating func addBadge(_ count: Int, color: UIColor) {
         self.badgeCount = count
         self.badgeColor = color
     }
@@ -36,14 +37,15 @@ public struct SegmentioItem {
 // MARK: - Content view
 
 public struct SegmentioState {
+    
     var backgroundColor: UIColor
     var titleFont: UIFont
     var titleTextColor: UIColor
     
     public init(
-        backgroundColor: UIColor = UIColor.clearColor(),
-        titleFont: UIFont = UIFont.systemFontOfSize(UIFont.smallSystemFontSize()),
-        titleTextColor: UIColor = UIColor.blackColor()) {
+        backgroundColor: UIColor = .clear,
+        titleFont: UIFont = UIFont.systemFont(ofSize: UIFont.smallSystemFontSize),
+        titleTextColor: UIColor = .black) {
         self.backgroundColor = backgroundColor
         self.titleFont = titleFont
         self.titleTextColor = titleTextColor
@@ -54,18 +56,20 @@ public struct SegmentioState {
 // MARK: - Horizontal separator
 
 public enum SegmentioHorizontalSeparatorType {
-    case Top, Bottom, TopAndBottom
+    
+    case top
+    case bottom
+    case topAndBottom
+    
 }
 
 public struct SegmentioHorizontalSeparatorOptions {
+    
     var type: SegmentioHorizontalSeparatorType
     var height: CGFloat
     var color: UIColor
     
-    public init(
-        type: SegmentioHorizontalSeparatorType = .TopAndBottom,
-        height: CGFloat = 1.0,
-        color: UIColor = UIColor.darkGrayColor()) {
+    public init(type: SegmentioHorizontalSeparatorType = .topAndBottom, height: CGFloat = 1.0, color: UIColor = .darkGray) {
         self.type = type
         self.height = height
         self.color = color
@@ -76,10 +80,11 @@ public struct SegmentioHorizontalSeparatorOptions {
 // MARK: - Vertical separator
 
 public struct SegmentioVerticalSeparatorOptions {
+    
     var ratio: CGFloat
     var color: UIColor
     
-    public init(ratio: CGFloat = 1.0, color: UIColor = UIColor.darkGrayColor()) {
+    public init(ratio: CGFloat = 1, color: UIColor = .darkGray) {
         self.ratio = ratio
         self.color = color
     }
@@ -89,20 +94,20 @@ public struct SegmentioVerticalSeparatorOptions {
 // MARK: - Indicator
 
 public enum SegmentioIndicatorType {
-    case Top, Bottom
+    
+    case top
+    case bottom
+    
 }
 
 public struct SegmentioIndicatorOptions {
+    
     var type: SegmentioIndicatorType
     var ratio: CGFloat
     var height: CGFloat
     var color: UIColor
     
-    public init(
-        type: SegmentioIndicatorType = .Bottom,
-        ratio: CGFloat = 1.0,
-        height: CGFloat = 2.0,
-        color: UIColor = UIColor.orangeColor()) {
+    public init(type: SegmentioIndicatorType = .bottom, ratio: CGFloat = 1, height: CGFloat = 2, color: UIColor = .orange) {
         self.type = type
         self.ratio = ratio
         self.height = height
@@ -114,20 +119,21 @@ public struct SegmentioIndicatorOptions {
 // MARK: - Control options
 
 public enum SegmentioStyle: String {
-    case OnlyLabel, OnlyImage, ImageOverLabel, ImageUnderLabel, ImageBeforeLabel, ImageAfterLabel
+    
+    case onlyLabel, onlyImage, imageOverLabel, imageUnderLabel, imageBeforeLabel, imageAfterLabel
     
     public static let allStyles = [
-        OnlyLabel,
-        OnlyImage,
-        ImageOverLabel,
-        ImageUnderLabel,
-        ImageBeforeLabel,
-        ImageAfterLabel
+        onlyLabel,
+        onlyImage,
+        imageOverLabel,
+        imageUnderLabel,
+        imageBeforeLabel,
+        imageAfterLabel
     ]
     
     public func isWithText() -> Bool {
         switch self {
-        case .OnlyLabel, .ImageOverLabel, .ImageUnderLabel, .ImageBeforeLabel, .ImageAfterLabel:
+        case .onlyLabel, .imageOverLabel, .imageUnderLabel, .imageBeforeLabel, .imageAfterLabel:
             return true
         default:
             return false
@@ -136,7 +142,7 @@ public enum SegmentioStyle: String {
     
     public func isWithImage() -> Bool {
         switch self {
-        case .ImageOverLabel, .ImageUnderLabel, .ImageBeforeLabel, .ImageAfterLabel, .OnlyImage:
+        case .imageOverLabel, .imageUnderLabel, .imageBeforeLabel, .imageAfterLabel, .onlyImage:
             return true
         default:
             return false
@@ -147,6 +153,7 @@ public enum SegmentioStyle: String {
 public typealias SegmentioStates = (defaultState: SegmentioState, selectedState: SegmentioState, highlightedState: SegmentioState)
 
 public struct SegmentioOptions {
+    
     var backgroundColor: UIColor
     var maxVisibleItems: Int
     var scrollEnabled: Bool
@@ -155,10 +162,12 @@ public struct SegmentioOptions {
     var indicatorOptions: SegmentioIndicatorOptions?
     var imageContentMode: UIViewContentMode
     var labelTextAlignment: NSTextAlignment
+    var labelTextNumberOfLines: Int
     var states: SegmentioStates
+    var animationDuration: CFTimeInterval
     
     public init() {
-        self.backgroundColor = UIColor.lightGrayColor()
+        self.backgroundColor = .lightGray
         self.maxVisibleItems = 4
         self.scrollEnabled = true
         
@@ -167,17 +176,19 @@ public struct SegmentioOptions {
         
         self.indicatorOptions = SegmentioIndicatorOptions()
         
-        self.imageContentMode = .Center
-        self.labelTextAlignment = .Center
+        self.imageContentMode = .center
+        self.labelTextAlignment = .center
+        self.labelTextNumberOfLines = 0
         
         self.states = SegmentioStates(
             defaultState: SegmentioState(),
             selectedState: SegmentioState(),
             highlightedState: SegmentioState()
         )
+        self.animationDuration = 0.1
     }
     
-    public init(backgroundColor: UIColor, maxVisibleItems: Int, scrollEnabled: Bool, indicatorOptions: SegmentioIndicatorOptions?, horizontalSeparatorOptions: SegmentioHorizontalSeparatorOptions?, verticalSeparatorOptions: SegmentioVerticalSeparatorOptions?, imageContentMode: UIViewContentMode, labelTextAlignment: NSTextAlignment, segmentStates: SegmentioStates) {
+    public init(backgroundColor: UIColor, maxVisibleItems: Int, scrollEnabled: Bool, indicatorOptions: SegmentioIndicatorOptions?, horizontalSeparatorOptions: SegmentioHorizontalSeparatorOptions?, verticalSeparatorOptions: SegmentioVerticalSeparatorOptions?, imageContentMode: UIViewContentMode, labelTextAlignment: NSTextAlignment, labelTextNumberOfLines: Int, segmentStates: SegmentioStates, animationDuration: CFTimeInterval) {
         self.backgroundColor = backgroundColor
         self.maxVisibleItems = maxVisibleItems
         self.scrollEnabled = scrollEnabled
@@ -186,7 +197,9 @@ public struct SegmentioOptions {
         self.verticalSeparatorOptions = verticalSeparatorOptions
         self.imageContentMode = imageContentMode
         self.labelTextAlignment = labelTextAlignment
+        self.labelTextNumberOfLines = labelTextNumberOfLines
         self.states = segmentStates
+        self.animationDuration = animationDuration
     }
     
 }
