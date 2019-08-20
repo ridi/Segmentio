@@ -23,10 +23,9 @@ class SegmentioCell: UICollectionViewCell {
     var bottomConstraint: NSLayoutConstraint?
     var cellSelected = false
     
-    fileprivate var options = SegmentioOptions()
-    fileprivate var style = SegmentioStyle.imageOverLabel
-    fileprivate let verticalSeparatorLayer = CAShapeLayer()
-    fileprivate let badgePresenter = BadgeViewPresenter()
+    private var options = SegmentioOptions()
+    private var style = SegmentioStyle.imageOverLabel
+    private let verticalSeparatorLayer = CAShapeLayer()
     
     override var isHighlighted: Bool {
         get {
@@ -100,6 +99,7 @@ class SegmentioCell: UICollectionViewCell {
         verticalSeparatorLayer.removeFromSuperlayer()
         super.prepareForReuse()
         
+        let badgePresenter = BadgeViewPresenter()
         switch style {
         case .onlyLabel:
             badgePresenter.removeBadgeFromContainerView(containerView!)
@@ -141,6 +141,7 @@ class SegmentioCell: UICollectionViewCell {
         if style.isWithText() {
             segmentTitleLabel?.textColor = selected ? selectedState.titleTextColor : defaultState.titleTextColor
             segmentTitleLabel?.font = selected ? selectedState.titleFont : defaultState.titleFont
+            segmentTitleLabel?.alpha = selected ? selectedState.titleAlpha : defaultState.titleAlpha
             segmentTitleLabel?.minimumScaleFactor = 0.5
             segmentTitleLabel?.adjustsFontSizeToFitWidth = true
         }
@@ -155,6 +156,7 @@ class SegmentioCell: UICollectionViewCell {
             return
         }
         
+        let badgePresenter = BadgeViewPresenter()
         if style == .onlyImage {
             badgePresenter.addBadgeForContainerView(
                 imageContainerView!,
@@ -180,7 +182,7 @@ class SegmentioCell: UICollectionViewCell {
 
     // MARK: - Private functions
     
-    fileprivate func setupContainerConstraints() {
+    private func setupContainerConstraints() {
         guard let segmentTitleLabel = segmentTitleLabel, let containerView = containerView else {
             return
         }
@@ -220,7 +222,7 @@ class SegmentioCell: UICollectionViewCell {
         ])
     }
     
-    fileprivate func setupImageContainerConstraints() {
+    private func setupImageContainerConstraints() {
         guard let segmentImageView = segmentImageView else {
             return
         }
@@ -280,7 +282,7 @@ class SegmentioCell: UICollectionViewCell {
     }
 
     
-    fileprivate func setupContent(content: SegmentioItem) {
+    private func setupContent(content: SegmentioItem) {
         if style.isWithImage() {
             segmentImageView?.contentMode = options.imageContentMode
             segmentImageView?.image = content.image
@@ -298,7 +300,7 @@ class SegmentioCell: UICollectionViewCell {
         }
     }
     
-    fileprivate func setupConstraint(indicatorOptions: SegmentioIndicatorOptions) {
+    private func setupConstraint(indicatorOptions: SegmentioIndicatorOptions) {
         switch indicatorOptions.type {
         case .top:
             topConstraint?.constant = padding + indicatorOptions.height
@@ -309,7 +311,7 @@ class SegmentioCell: UICollectionViewCell {
 
     // MARK: - Vertical separator
     
-    fileprivate func addVerticalSeparator() {
+    private func addVerticalSeparator() {
         let contentViewWidth = contentView.bounds.width
         let rect = CGRect(
             x: contentView.bounds.width - 1,
@@ -378,7 +380,7 @@ class SegmentioCell: UICollectionViewCell {
         bottomConstraint.isActive = true
     }
     
-    fileprivate func setupVerticalSeparators() {
+    private func setupVerticalSeparators() {
         guard let verticalSeparatorOptions = options.verticalSeparatorOptions else {
             return
         }
